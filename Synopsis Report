@@ -1,0 +1,125 @@
+NEUROFLARE
+
+AI-Based Fire Prediction and Smart Alert System
+
+
+
+Team Name: SentineIX
+Team Leader: Molik Gupta
+Team Members: Shashank Verma
+                                   Yogya Sharma
+                                   Mohammad Sabir
+                                   Shyam Gupta      
+Department: Computer Science Engineering
+Event: Scintillation – Elementa
+Institution: Arya College of Engineering & IT
+
+ 
+1. INTRODUCTION
+Fire accidents cause severe loss of life and property every year. Traditional fire alarm systems detect fire only after ignition. The proposed AI-Based Fire Prediction System (NeuroFlare) predicts fire risk before an outbreak using IoT sensors and Machine Learning algorithms.
+
+1.a Objective
+• To design a smart fire prediction system.
+• To integrate IoT sensors with AI-based decision making.
+• To reduce emergency response time.
+• To send real-time alerts using buzzer and cloud notifications.
+• To develop a low-cost and scalable safety solution.
+
+1.b Materials Required
+•	Hardware Components:
+•	NodeMCU # ESP32
+•	MQ-2 Smoke Sensor
+•	MQ-135 Gas Sensor
+•	DHT22 Temperature & Humidity Sensor
+•	Flame Sensor
+•	Buzzer 
+•	LED Indicators
+•	Jumper Wires
+•	Breadboard
+•	Software & Tools:
+•	Arduino IDE
+•	Arduino App Lab
+•	Python for Machine Learning Model
+•	ThingSpeak / Firebase Cloud Platform
+•	Embedded C / C++
+•	Serial Monitor (Debug & Test)
+2. METHODOLOGY USED
+Step 1: Sensors continuously collect temperature, humidity, smoke, and flame data.
+Step 2: NodeMCU transmits data to the cloud using Wi-Fi.
+Step 3: A Machine Learning model analyzes data and calculates fire probability.
+Step 4: If probability exceeds threshold, buzzer activates and notification is sent.
+Step 5: System continues real-time monitoring.
+
+3. SYSTEM ARCHITECTURE
+Sensors → NodeMCU → Cloud Server → AI Model → Alert System
+
+The system consists of Sensing Layer, Processing Layer, and Intelligence & Alert Layer.
+
+┌───────────────────────────────┐
+ │        Environment            │
+ │ (Temperature / Gas / Smoke)   │
+ └───────────────┬───────────────┘
+                 │
+                 ▼
+ ┌───────────────────────────────┐
+ │        Sensors Layer          │
+ │  • MQ-2 Gas Sensor            │
+ │  • DHT22 Temp/Humidity        │
+ │  • Flame Sensor (Optional)    │
+ └───────────────┬───────────────┘
+                 │
+                 ▼
+ ┌───────────────────────────────┐
+ │       ESP32 Controller        │
+ │  • Data Acquisition           │
+ │  • Data Preprocessing         │
+ │  • ML Risk Calculation        │
+ └───────────────┬───────────────┘
+                 │
+        ┌────────┴────────┐
+        ▼                 ▼
+┌───────────────┐   ┌────────────────┐
+│ Local Alerts  │   │  IoT Cloud     │
+│ • Buzzer      │   │  (Blynk/TS)    │
+│ • LED         │   │  Data Logging  │
+│ • OLED        │   │  Risk Graph    │
+└───────────────┘   └────────┬───────┘
+                              │
+                              ▼
+                     ┌────────────────┐
+                     │  Mobile App    │
+                     │  Notifications │
+                     └────────────────┘
+
+4. APPLICATIONS
+•	Smart Homes
+•	Industrial Safety Monitoring
+•	Warehouses & Storage Units
+•	Forest Fire Detection
+•	Data Centers
+
+5. ADVANTAGES
+•	Early fire risk prediction
+•	Real-time monitoring
+•	Low-cost implementation
+•	Reduced false alarms using AI
+•	IoT-based remote access
+
+6. DISADVANTAGES
+•	Requires stable internet connection
+•	Sensor calibration required
+•	Cloud dependency
+•	Initial setup configuration needed
+
+7. INNOVATION OF THE PROJECT
+Unlike traditional fire alarms that react after ignition, NeuroFlare predicts fire probability using AI. This predictive approach enhances safety and reduces damage.
+
+8. FUTURE SCOPE
+•	Integration with thermal cameras
+•	Deep Learning-based models
+•	GSM/SMS alert system
+•	Automatic sprinkler integration
+•	Mobile app dashboard
+
+9. CONCLUSION
+NeuroFlare is an intelligent AI-powered fire prediction system that combines IoT and Machine Learning to enhance early fire detection. It provides a scalable and cost-effective solution for modern safety applications. The system continuously monitors environmental parameters such as temperature, humidity, and gas levels to estimate fire risk in advance. Using an ESP32 controller and cloud connectivity, it enables real-time monitoring and instant alerts through local alarms and led detections.
