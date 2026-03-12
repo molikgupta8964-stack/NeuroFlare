@@ -1,0 +1,60 @@
+#include <WiFi.h>
+#include <WiFiClientSecure.h>
+#include <UniversalTelegramBot.h>
+#include <ArduinoJson.h>
+#include <DHT.h>
+
+#define DHTPIN 4
+#define DHTTYPE DHT22
+#define MQ2_PIN 34
+#define MQ135_PIN 35
+#define BUZZER 26
+
+const char* ssid = "host_molik.gpt.in";
+const char* password = "MTD8350A";
+
+#define BOT_TOKEN "7976537633:AAFhTT072ePsChG6HoP6jTtD79i6XxMZKSg"
+#define CHAT_ID "7698153448"
+
+WiFiClientSecure client;
+UniversalTelegramBot bot(BOT_TOKEN, client);
+DHT dht(DHTPIN, DHTTYPE);
+
+void setup() {
+  Serial.begin(115200);
+  pinMode(BUZZER, OUTPUT);
+  digitalWrite(BUZZER, LOW);
+
+  dht.begin();
+  
+  WiFi.begin(ssid, password);
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+  }
+
+  client.setInsecure(); // Required for ESP32
+}
+
+void loop() {
+
+  float temp = dht.readTemperature();
+  float hum = dht.readHumidity();
+  int mq2 = analogRead(MQ2_PIN);
+  int mq135 = analogRead(MQ135_PIN);
+
+  String message = "📊 Sensor Readings:\n";
+  message += "🌡 Temp: " + String(temp) + " °C\n";
+  message += "💧 Humidity: " + String(hum) + " %\n";
+  message += "🔥 MQ2: " + String(mq2) + "\n";
+  message += "🌫 MQ135: " + String(mq135) + "\n";
+
+  bot.sendMessage(CHAT_ID, message, "");
+
+  if (mq2 > 2000 || mq135 > 2000) {
+    digitalWrite(BUZZER, HIGH);
+  } else {
+    digitalWrite(BUZZER, LOW);
+  }
+
+  delay(20000); // Telegram limit safe delay
+}
