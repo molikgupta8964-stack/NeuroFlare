@@ -1,0 +1,120 @@
+#include <WiFi.h>
+#include <ThingSpeak.h>
+#include <DHT.h>
+
+// ---------- WiFi ----------
+const char* ssid = "host_molik.gpt.in";
+const char* password = "MTD8350A";
+
+// ---------- ThingSpeak ----------
+unsigned long channelID = 3274032;   // Replace
+const char* writeAPIKey = "VN6DL9X6L5R5BFO6
+";
+
+WiFiClient client;
+
+// ---------- Pins ----------
+#define MQ2_PIN 34
+#define FLAME_PIN 35
+#define BUZZER_PIN 25
+#define LED_PIN 26
+#define DHTPIN 4
+#define DHTTYPE DHT22
+
+DHT dht(DHTPIN, DHTTYPE);
+
+// ---------- Risk Threshold ----------
+float riskThreshold = 0.65;
+
+void setup() {
+  Serial.begin(115200);
+
+  pinMode(MQ2_PIN, INPUT);
+  pinMode(FLAME_PIN, INPUT);
+  pinMode(BUZZER_PIN, OUTPUT);
+  pinMode(LED_PIN, OUTPUT);
+
+  dht.begin();
+
+  // Connect WiFi
+  WiFi.begin(host_molik.gpt.in, MTD8350A);
+  Serial.print("Connecting to WiFi");
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+  }
+  Serial.println("\nConnected to WiFi");
+
+  ThingSpeak.begin(client);
+}
+
+void loop() {
+
+  // -------- Read Sensors --------
+  float temperature = dht.readTemperature();
+  float humidity = dht.readHumidity();
+  int gasValue = analogRead(MQ2_PIN);
+  int flameValue = digitalRead(FLAME_PIN);
+
+  // -------- Normalize --------
+  float tempNorm = temperature / 100.0;
+  float gasNorm = gasValue / 4095.0;
+  float flameNorm = (flameValue == LOW) ? 1.0 : 0.0;
+
+  // -------- ML Risk Calculation --------
+  float riskScore = (0.4 * tempNorm) +
+                    (0.4 * gasNorm) +
+                    (0.2 * flameNorm);
+
+  // -------- Alert Status --------
+  int alertStatus = 0;
+
+  if (riskScore > riskThreshold) {
+    digitalWrite(BUZZER_PIN, HIGH);
+    digitalWrite(LED_PIN, HIGH);
+    alertStatus = 1;
+  } else {
+    digitalWrite(BUZZER_PIN, LOW);
+    digitalWrite(LED_PIN, LOW);
+    alertStatus = 0;
+  }
+
+  // -------- WiFi RSSI --------
+  int wifiSignal = WiFi.RSSI();
+
+  // -------- System Status (Heartbeat) --------
+  int systemStatus = 1;
+
+  // -------- Serial Monitor --------
+  Serial.println("---- Sensor Data ----");
+  Serial.print("Temp: "); Serial.println(temperature);
+  Serial.print("Humidity: "); Serial.println(humidity);
+  Serial.print("Gas: "); Serial.println(gasValue);
+  Serial.print("Risk: "); Serial.println(riskScore);
+  Serial.print("Flame: "); Serial.println(flameNorm);
+  Serial.print("Alert: "); Serial.println(alertStatus);
+  Serial.print("WiFi RSSI: "); Serial.println(wifiSignal);
+  Serial.println("----------------------");
+
+  // -------- Send to ThingSpeak (All 8 Fields) --------
+  ThingSpeak.setField(1, temperature);
+  ThingSpeak.setField(2, humidity);
+  ThingSpeak.setField(3, gasValue);
+  ThingSpeak.setField(4, riskScore);
+  ThingSpeak.setField(5, flameNorm);
+  ThingSpeak.setField(6, alertStatus);
+  ThingSpeak.setField(7, wifiSignal);
+  ThingSpeak.setField(8, systemStatus);
+
+  int response = ThingSpeak.writeFields(3274032, VN6DL9X6L5R5BFO6
+);
+
+  if(response == 200){
+    Serial.println("Data uploaded successfully.");
+  } else {
+    Serial.print("Upload failed. Error code: ");
+    Serial.println(response);
+  }
+
+  delay(20000);  // ThingSpeak minimum 15 sec
+}
