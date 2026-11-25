@@ -3,6 +3,8 @@
 An intelligent **fire prediction and alert system** built using **ESP32, MQ2 Gas Sensor, and Blynk IoT platform**.  
 The system analyzes gas sensor data using an **AI-style predictive algorithm** to detect potential fire hazards and send **real-time alerts to a mobile device**.
 
+Live Website - https://v0-neuroflare.vercel.app/
+
 ---
 
 ## 🚀 Features
